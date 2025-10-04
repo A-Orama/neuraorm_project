@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Journey — neuraorm</title>
+<style>
+  :root{
+    --bg:#0b0c0f; --fg:#e8eaee; --muted:#9aa3ad; --card:#12141a;
+    --stroke:#3a7cf7;
+    --radius:18px;
+  }
+  @media (prefers-color-scheme: light){
+    :root{ --bg:#fbfbfd; --fg:#0f1115; --muted:#556070; --card:#ffffff; --stroke:#2563eb; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0; font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif; background:var(--bg); color:var(--fg)}
+  .wrap{max-width:1100px; margin:0 auto; padding:28px 18px}
+  h1{margin:0 0 6px; line-height:1.2; font-size:clamp(28px,4vw,42px)}
+  p.lead{margin:0 0 22px; color:var(--muted)}
+
+  /* Canvas behind the cards */
+  .canvas{
+    position:relative; width:100%;
+    min-height:760px;
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:22px;
+    background:linear-gradient(180deg, rgba(255,255,255,.02), transparent 40%), var(--card);
+    overflow:hidden;
+    padding:64px 24px 96px;
+  }
+  .canvas svg{position:absolute; inset:0; width:100%; height:100%; z-index:0}
+
+  .conn-back{
+    stroke:rgba(255,255,255,.10);
+    stroke-width:14;
+    fill:none;
+    vector-effect:non-scaling-stroke;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+  .conn-main{
+    stroke:var(--stroke);
+    stroke-width:6;
+    fill:none;
+    vector-effect:non-scaling-stroke;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-dasharray:14 16;
+  }
+
+  .cards{
+    position:relative; z-index:1;
+    display:flex; flex-wrap:wrap; justify-content:center;
+
+    /* ↑↑ increased row gap so vertical arrows are visible */
+    gap:64px 56px; /* row-gap column-gap */
+  }
+  .card{
+    flex:1 1 280px; max-width:320px;
+    background:var(--card); border:1px solid rgba(255,255,255,.08);
+    border-radius:var(--radius); padding:16px 18px 14px;
+    box-shadow:0 18px 40px rgba(0,0,0,.25);
+  }
+  .when{font-size:12px; color:var(--muted); letter-spacing:.3px}
+  .title{font-weight:800; margin:6px 0 6px}
+  .tags{margin-top:8px; display:flex; gap:8px; flex-wrap:wrap}
+  .tag{font-size:11px; padding:2px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.12); color:var(--muted)}
+
+  @media (max-width:860px){
+    .cards{gap:40px 24px} /* still roomy on mobile */
+    .card{flex:1 1 100%; max-width:none}
+    .canvas{padding:42px 16px 72px; min-height:700px}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Journey</h1>
+    <p class="lead">A literal path through study → internships → research → present. No names, just what changed me.</p>
+  </div>
+
+  <section class="wrap">
+    <div class="canvas" id="canvas">
+      <svg id="svg" aria-hidden="true">
+        <defs>
+          <!-- Arrowheads that inherit stroke & auto-rotate -->
+          <marker id="arrow-main" viewBox="0 0 12 12"
+                  markerWidth="12" markerHeight="12"
+                  refX="10" refY="6"
+                  orient="auto-start-reverse"
+                  markerUnits="userSpaceOnUse">
+            <path d="M0,0 L12,6 L0,12 Z" fill="context-stroke"/>
+          </marker>
+          <marker id="arrow-back" viewBox="0 0 16 16"
+                  markerWidth="16" markerHeight="16"
+                  refX="13" refY="8"
+                  orient="auto-start-reverse"
+                  markerUnits="userSpaceOnUse">
+            <path d="M0,0 L16,8 L0,16 Z" fill="rgba(255,255,255,.10)"/>
+          </marker>
+        </defs>
+        <g id="conns-back"></g>
+        <g id="conns-main"></g>
+      </svg>
+
+      <div class="cards" id="cards">
+        <!-- Keep this order chronological; flow is computed by rows -->
+        <article class="card">
+          <div class="when">2018–2024</div>
+          <h3 class="title">BSc in Software Engineering</h3>
+          <p>Foundations: algorithms, data, systems, and building for real users. Learned to think in tests and ship in small steps.</p>
+          <div class="tags"><span class="tag">#study</span><span class="tag">#software</span></div>
+        </article>
+
+        <article class="card">
+          <div class="when">2021 (summer)</div>
+          <h3 class="title">Undergraduate Research</h3>
+          <p>Studied how people perceive AI- vs human-written news. Ran user studies, analysis, and wrote it up for a workshop.</p>
+          <div class="tags"><span class="tag">#research</span><span class="tag">#nlp</span></div>
+        </article>
+
+        <article class="card">
+          <div class="when">2021–2022</div>
+          <h3 class="title">Customer-facing work</h3>
+          <p>Retail experience taught me operations, empathy under pressure, and patience — underrated engineering skills.</p>
+          <div class="tags"><span class="tag">#ops</span><span class="tag">#people</span></div>
+        </article>
+
+        <article class="card">
+          <div class="when">2022</div>
+          <h3 class="title">Cybersecurity R&amp;D Intern</h3>
+          <p>API testing, acceptance criteria, integrating manual + automated checks. Learned to treat quality as a system.</p>
+          <div class="tags"><span class="tag">#security</span><span class="tag">#testing</span></div>
+        </article>
+
+        <article class="card">
+          <div class="when">2023</div>
+          <h3 class="title">QA / Tools Automation Intern (mobile)</h3>
+          <p>Designed test plans for a major mobile app; automated critical paths in Swift/Obj-C; built internal tooling.</p>
+          <div class="tags"><span class="tag">#qa</span><span class="tag">#automation</span><span class="tag">#ios</span></div>
+        </article>
+
+        <article class="card">
+          <div class="when">early 2024</div>
+          <h3 class="title">AI Product Capstone</h3>
+          <p>Prototyped an AI copilot for planning and hygiene checks. Prompt design, decision support, and LLM eval in practice.</p>
+          <div class="tags"><span class="tag">#llm</span><span class="tag">#product</span></div>
+        </article>
+
+        <article class="card">
+          <div class="when">2025—now</div>
+          <h3 class="title">MSc in Artificial Intelligence</h3>
+          <p>Focusing on streaming speech recognition for Spanish-English code-switching: latency, accuracy, and real-world fit.</p>
+          <div class="tags"><span class="tag">#msc</span><span class="tag">#asr</span><span class="tag">#code-switching</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+<script>
+/* SmartArt-style connectors:
+   - Each row flows left->right (side arrows).
+   - At row break: exit from BOTTOM of last card, go DOWN, run ACROSS under to the
+     LEFTMOST of next row, then go UP into its TOP (always). */
+function drawSnake(){
+  const canvas = document.getElementById('canvas');
+  const svg    = document.getElementById('svg');
+  const backG  = document.getElementById('conns-back');
+  const mainG  = document.getElementById('conns-main');
+  const cards  = Array.from(document.querySelectorAll('.card'));
+
+  const crect = canvas.getBoundingClientRect();
+  svg.setAttribute('viewBox', `0 0 ${crect.width} ${crect.height}`);
+
+  const GAP = 20; // clearance so arrowheads don't hide under card borders
+  const boxes = cards.map(el=>{
+    const r = el.getBoundingClientRect();
+    const x = r.left - crect.left,  y = r.top - crect.top;
+    const w = r.width,              h = r.height;
+    return {
+      x, y, w, h,
+      cx: x + w/2, cy: y + h/2,
+      left:  {x: x - GAP,     y: y + h/2},
+      right: {x: x + w + GAP, y: y + h/2},
+      top:   {x: x + w/2,     y: y - GAP},
+      bottom:{x: x + w/2,     y: y + h + GAP}
+    };
+  });
+  if (!boxes.length){ backG.innerHTML=''; mainG.innerHTML=''; return; }
+
+  // Group into rows by y-center proximity
+  const avgH   = boxes.reduce((a,b)=>a+b.h,0) / boxes.length;
+  const ROW_EPS = Math.max(34, avgH * 0.55);
+  const rows = [];
+  boxes.forEach((b,i)=>{
+    const yc = b.cy;
+    let row = rows.find(r => Math.abs(r.y - yc) < ROW_EPS);
+    if(!row){ row = { y: yc, items: [] }; rows.push(row); }
+    row.items.push({ i, x: b.cx });
+  });
+  rows.sort((a,b)=>a.y-b.y);
+  rows.forEach(r => r.items.sort((a,b)=>a.x-b.x)); // force left->right
+
+  // Helpers
+  function addConn(points){
+    const d = "M " + points.map((p,idx)=>`${idx?'L ':''}${p.x},${p.y}`).join(' ');
+    const pBack = document.createElementNS('http://www.w3.org/2000/svg','path');
+    pBack.setAttribute('d', d);
+    pBack.setAttribute('class', 'conn-back');
+    pBack.setAttribute('marker-end','url(#arrow-back)');
+    backG.appendChild(pBack);
+
+    const pMain = document.createElementNS('http://www.w3.org/2000/svg','path');
+    pMain.setAttribute('d', d);
+    pMain.setAttribute('class', 'conn-main');
+    pMain.setAttribute('marker-end','url(#arrow-main)');
+    mainG.appendChild(pMain);
+  }
+
+  // Across each row
+  for (let r = 0; r < rows.length; r++){
+    const items = rows[r].items.map(it=>boxes[it.i]);
+
+    // side-to-side within the row (left -> right)
+    for (let j = 0; j < items.length - 1; j++){
+      const a = items[j], b = items[j+1];
+      addConn([ a.right, b.left ]);
+    }
+
+    // connect row r -> r+1
+    if (r < rows.length - 1){
+      const next = rows[r+1].items.map(it=>boxes[it.i]);
+      const lastInRow = items[items.length - 1];
+      const firstNext = next[0];
+
+      // Exit from UNDER the last card in current row
+      const from = lastInRow.bottom;
+
+      // Always enter TOP of the first card in next row (as requested)
+      const to = firstNext.top;
+
+      // Route: down to midway, across, up
+      const midY = (from.y + to.y) / 2;
+      addConn([
+        {x: from.x, y: from.y},        // under last card
+        {x: from.x, y: midY},          // straight down
+        {x: to.x,   y: midY},          // horizontal run under row
+        {x: to.x,   y: to.y}           // up into top of first card next row
+      ]);
+    }
+  }
+
+  // grow canvas if needed
+  const bottom = Math.max(...cards.map(el => el.getBoundingClientRect().bottom)) - crect.top;
+  const needed = bottom + 90;
+  if (needed > crect.height){
+    canvas.style.minHeight = `${needed}px`;
+    const crect2 = canvas.getBoundingClientRect();
+    svg.setAttribute('viewBox', `0 0 ${crect2.width} ${crect2.height}`);
+  }
+}
+
+// redraw after layout settles (flex-wrap)
+const reflow = () => requestAnimationFrame(()=>requestAnimationFrame(drawSnake));
+addEventListener('DOMContentLoaded', reflow);
+addEventListener('resize', reflow);
+</script>
+</body>
+</html>

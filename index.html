@@ -1,17 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>neuraorm</title>
-  <style>
-    body { font-family: system-ui, sans-serif; background:#0b0c0f; color:#e8eaee;
-           display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; margin:0; }
-    h1 { font-size:2.4rem; margin:0 0 10px; }
-    p { color:#a0a7b3; font-size:1.1rem; }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>neuraorm</title>
+<style>
+  :root{
+    --bg:#0b0c0f; --fg:#e8eaee; --muted:#9aa3ad; --card:#12141a;
+    --stroke:#3a7cf7; --radius:18px;
+  }
+  @media (prefers-color-scheme: light){
+    :root{ --bg:#fbfbfd; --fg:#0f1115; --muted:#556070; --card:#ffffff; --stroke:#2563eb; }
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--fg);
+    font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif;
+    display:flex; flex-direction:column;
+  }
+
+  /* Header */
+  .header{
+    position:sticky; top:0; z-index:20;
+    display:flex; align-items:center; justify-content:space-between;
+    width:100%;
+    padding:14px 28px;
+  }
+
+  .brand{
+    font-size:clamp(20px,3.5vw,28px);
+    font-weight:800;
+    letter-spacing:.2px;
+  }
+  .muted{color:var(--muted)}
+
+  /* Hamburger */
+  .hambtn{
+    appearance:none;
+    border:1px solid rgba(255,255,255,.12);
+    background:var(--card);
+    color:var(--fg);
+    padding:10px 12px;
+    border-radius:12px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    transition:border .2s ease, box-shadow .2s ease;
+  }
+  .hambtn:focus-visible{
+    outline:none;
+    border-color:var(--stroke);
+    box-shadow:0 0 0 3px rgba(58,124,247,.35);
+  }
+  .bars{width:20px; height:2px; background:var(--fg); position:relative; border-radius:2px}
+  .bars::before,.bars::after{
+    content:""; position:absolute; left:0; right:0; height:2px; background:var(--fg); border-radius:2px;
+  }
+  .bars::before{top:-6px} .bars::after{top:6px}
+
+  /* Drawer */
+  .backdrop{
+    position:fixed; inset:0; background:rgba(0,0,0,.45); backdrop-filter:saturate(120%) blur(2px);
+    opacity:0; pointer-events:none; transition:opacity .18s ease;
+  }
+  /* replace your .drawer and focus rules with this: */
+
+  .drawer{
+  position:fixed; top:0; right:-320px;
+  width:min(320px,84vw); height:100%;
+  background:var(--card);
+  border-left:2px solid var(--stroke);
+  box-shadow:-24px 0 60px rgba(0,0,0,.35);
+  transition:right .22s cubic-bezier(.22,.8,.2,1), border-color .3s ease;
+  z-index:30; display:flex; flex-direction:column;
+}
+  .drawer.open{ right:0 }
+
+  /* eliminate WebKit glow & set custom blue for focus rings */
+  .drawer:focus,
+  .drawer *:focus,
+    button:focus,
+    button:focus-visible {
+    outline:none !important;
+    box-shadow:0 0 0 3px rgba(58,124,247,.45) !important;
+    border-color:var(--stroke) !important;
+   -webkit-tap-highlight-color:transparent;
+  }
+
+  .backdrop.show{ opacity:1; pointer-events:auto }
+
+  .drawer header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px; border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .closebtn{
+    appearance:none; border:1px solid rgba(255,255,255,.12);
+    background:transparent; color:var(--fg);
+    padding:6px 10px; border-radius:10px; cursor:pointer;
+    transition:border .2s ease, box-shadow .2s ease;
+  }
+  .closebtn:focus-visible{
+    outline:none;
+    border-color:var(--stroke);
+    box-shadow:0 0 0 3px rgba(58,124,247,.35);
+  }
+  .navlist{list-style:none; margin:0; padding:8px 12px}
+  .navlist a{
+    display:block; padding:12px 12px; border-radius:12px;
+    color:var(--fg); text-decoration:none; font-weight:600;
+    border:1px solid transparent;
+  }
+  .navlist a:hover{ background:rgba(255,255,255,.04); border-color:rgba(255,255,255,.08) }
+  .small{font-size:12px; color:var(--muted); margin:10px 12px 0}
+
+  /* Main card */
+  .container{flex:1; display:flex; align-items:center; justify-content:center; padding:32px 18px}
+  .card{
+    width:min(680px, 92vw);
+    background:var(--card);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:22px;
+    padding:28px 26px 24px;
+    box-shadow:0 22px 60px rgba(0,0,0,.35);
+    text-align:center;
+  }
+  h1{margin:0 0 10px; font-size:clamp(28px,4vw,42px)}
+  p{margin:0; color:var(--muted); font-size:1.05rem}
+  .badge{
+    display:inline-block; margin-top:14px; padding:6px 10px; border-radius:999px;
+    border:1px solid rgba(255,255,255,.12); color:var(--fg)
+  }
+  .cta{
+    display:inline-flex; align-items:center; gap:10px;
+    margin-top:18px; padding:10px 14px; border-radius:12px;
+    background:transparent; color:var(--fg); text-decoration:none;
+    border:1px solid rgba(255,255,255,.14);
+    transition:border .2s ease, background .2s ease;
+  }
+  .cta:hover{ background:rgba(255,255,255,.05); border-color:var(--stroke) }
+  .dot{width:8px; height:8px; border-radius:50%; background:var(--stroke)}
+</style>
 </head>
 <body>
-  <h1>neuraorm</h1>
-  <p>🚧 Under Construction 🚧</p>
+
+  <!-- header -->
+  <header class="header" aria-label="Site header">
+    <div class="brand">neuraorm <span class="muted">/ under construction</span></div>
+    <button class="hambtn" id="openNav" aria-haspopup="dialog" aria-controls="navDrawer" aria-expanded="false">
+      <span class="bars" aria-hidden="true"></span>
+      <span class="muted" style="font-weight:600">Menu</span>
+    </button>
+  </header>
+
+  <!-- main -->
+  <main class="container">
+    <section class="card">
+      <h1>neuraorm</h1>
+      <p>🚧 Under Construction 🚧</p>
+      <div class="badge">quietly building in public</div><br/>
+      <a class="cta" href="journey.html"><span class="dot"></span> Visit Journey</a>
+    </section>
+  </main>
+
+  <!-- drawer + backdrop -->
+  <div class="backdrop" id="backdrop" hidden></div>
+  <aside class="drawer" id="navDrawer" aria-modal="true" role="dialog" aria-label="Site navigation" tabindex="-1">
+    <header>
+      <strong>Navigation</strong>
+      <button class="closebtn" id="closeNav" aria-label="Close menu">Close</button>
+    </header>
+    <p class="small">sections</p>
+    <ul class="navlist">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="journey.html">Journey</a></li>
+      <li><a href="#" aria-disabled="true" class="muted">Rants (soon)</a></li>
+      <li><a href="#" aria-disabled="true" class="muted">Now (soon)</a></li>
+    </ul>
+  </aside>
+
+<script>
+  const drawer   = document.getElementById('navDrawer');
+  const backdrop = document.getElementById('backdrop');
+  const openBtn  = document.getElementById('openNav');
+  const closeBtn = document.getElementById('closeNav');
+
+  function openDrawer(){
+    drawer.classList.add('open');
+    backdrop.hidden = false;
+    requestAnimationFrame(()=>backdrop.classList.add('show'));
+    openBtn.setAttribute('aria-expanded','true');
+    drawer.focus();
+  }
+  function closeDrawer(){
+    drawer.classList.remove('open');
+    backdrop.classList.remove('show');
+    backdrop.addEventListener('transitionend', () => (backdrop.hidden = true), { once:true });
+    openBtn.setAttribute('aria-expanded','false');
+    openBtn.focus();
+  }
+
+  openBtn.addEventListener('click', openDrawer);
+  closeBtn.addEventListener('click', closeDrawer);
+  backdrop.addEventListener('click', closeDrawer);
+  window.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && drawer.classList.contains('open')) closeDrawer(); });
+</script>
 </body>
 </html>

@@ -75,6 +75,10 @@
 </style>
 </head>
 <body>
+  <!-- header -->
+  <site-header page="journey"></site-header>
+  <div style="height:56px"></div>
+  <div class="spacer"></div>
   <div class="wrap">
     <h1>Journey</h1>
     <p class="lead">A literal path through study → internships → research → present. How am I jobless? LOL</p>
@@ -115,15 +119,15 @@
 
         <article class="card">
           <div class="when">2021 (summer)</div>
-          <h3 class="title">Undergraduate Research</h3>
-          <p>Studied how people perceive AI- vs human-written news. Ran user studies, analysis, and wrote it up for a workshop.</p>
+          <h3 class="title">REU Undergraduate Research</h3>
+          <p>Studied how people perceive AI- vs human-written text. Ran user studies, analysis, and wrote it up for a now published paper.</p>
           <div class="tags"><span class="tag">#research</span><span class="tag">#nlp</span></div>
         </article>
 
         <article class="card">
           <div class="when">2021–2022</div>
           <h3 class="title">Customer-facing work</h3>
-          <p>Retail experience taught me operations, empathy under pressure, and patience — underrated engineering skills.</p>
+          <p>Retail experience taught me operations, empathy under pressure, and patience (underrated engineering skills).</p>
           <div class="tags"><span class="tag">#ops</span><span class="tag">#people</span></div>
         </article>
 
@@ -136,23 +140,37 @@
 
         <article class="card">
           <div class="when">2023</div>
-          <h3 class="title">QA / Tools Automation Intern (mobile)</h3>
+          <h3 class="title">Google TechExchange Student</h3>
+          <p>...</p>
+          <div class="tags"><span class="tag">#advanced_ds</span><span class="tag">#collab</span><span class="tag">#_</span></div>
+        </article>
+
+        <article class="card">
+          <div class="when">2023</div>
+          <h3 class="title">Apple QA / Tools Automation Intern</h3>
           <p>Designed test plans for a major mobile app; automated critical paths in Swift/Obj-C; built internal tooling.</p>
           <div class="tags"><span class="tag">#qa</span><span class="tag">#automation</span><span class="tag">#ios</span></div>
         </article>
 
         <article class="card">
           <div class="when">early 2024</div>
-          <h3 class="title">AI Product Capstone</h3>
-          <p>Prototyped an AI copilot for planning and hygiene checks. Prompt design, decision support, and LLM eval in practice.</p>
-          <div class="tags"><span class="tag">#llm</span><span class="tag">#product</span></div>
+          <h3 class="title">Microsoft AI Product Capstone</h3>
+          <p>Prototyped an AI agent for planning and hygiene checks. Prompt design, decision support, and LLM eval in practice.</p>
+          <div class="tags"><span class="tag">#llm</span><span class="tag">#prompt_engineering</span><span class="tag">#product</span></div>
         </article>
 
         <article class="card">
           <div class="when">2025—now</div>
           <h3 class="title">MSc in Artificial Intelligence</h3>
           <p>Focusing on streaming speech recognition for Spanish-English code-switching: latency, accuracy, and real-world fit.</p>
-          <div class="tags"><span class="tag">#msc</span><span class="tag">#asr</span><span class="tag">#code-switching</span></div>
+          <div class="tags"><span class="tag">#msc</span><span class="tag">#asr</span><span class="tag">#genai</span></div>
+        </article>
+
+        <article class="card">
+          <div class="when">now</div>
+          <h3 class="title">Looking for a Job </h3>
+          <p>👀</p>
+          <div class="tags"><span class="tag">#ai</span><span class="tag">#software</span><span class="tag">#anything_really</span></div>
         </article>
       </div>
     </div>
@@ -266,5 +284,6 @@ const reflow = () => requestAnimationFrame(()=>requestAnimationFrame(drawSnake))
 addEventListener('DOMContentLoaded', reflow);
 addEventListener('resize', reflow);
 </script>
+<script type="module" src="assets/site-header.js"></script>
 </body>
 </html>

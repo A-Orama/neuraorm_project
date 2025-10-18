@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Journey — neuraorm</title>
+<title>Engineer Journey — neuraorm</title>
 <style>
   :root{
     --bg:#0b0c0f; --fg:#e8eaee; --muted:#9aa3ad; --card:#12141a;
@@ -15,11 +15,17 @@
   }
   *{box-sizing:border-box}
   body{margin:0; font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif; background:var(--bg); color:var(--fg)}
+  
+  /* Header */
+  site-header{position:fixed; top:0; left:0; right:0; height:56px; z-index:1000}
+  .topbar{height:56px; background:var(--bg); border-bottom:1px solid rgba(255,255,255,.08)}
+  .topbar-inner{max-width:1100px; margin:0 auto; padding:0 18px; height:56px; display:flex; align-items:center; justify-content:space-between}
+  .brand{color:var(--fg); text-decoration:none; font-weight:800}
+  .page{color:var(--muted); font-size:14px; text-transform:uppercase; letter-spacing:.4px}
   .wrap{max-width:1100px; margin:0 auto; padding:28px 18px}
   h1{margin:0 0 6px; line-height:1.2; font-size:clamp(28px,4vw,42px)}
   p.lead{margin:0 0 22px; color:var(--muted)}
 
-  /* Canvas behind the cards */
   .canvas{
     position:relative; width:100%;
     min-height:760px;
@@ -52,35 +58,129 @@
   .cards{
     position:relative; z-index:1;
     display:flex; flex-wrap:wrap; justify-content:center;
+    gap:120px 56px;
+  }
 
-    /* ↑↑ increased row gap so vertical arrows are visible */
-    gap:64px 56px; /* row-gap column-gap */
+  /* Card flip container */
+  .card-container{
+    flex:0 0 320px; max-width:320px; width:320px;
+    perspective:1000px;
+    cursor:pointer;
   }
-  .card{
-    flex:1 1 280px; max-width:320px;
-    background:var(--card); border:1px solid rgba(255,255,255,.08);
-    border-radius:var(--radius); padding:16px 18px 14px;
+
+  .card-inner{
+    position:relative;
+    width:100%;
+    height:260px;
+    transition:transform 0.6s;
+    transform-style:preserve-3d;
+  }
+
+  .card-container:hover .card-inner,
+  .card-container.flipped .card-inner{
+    transform:rotateY(180deg);
+  }
+
+  .card, .card-back{
+    position:absolute;
+    width:100%;
+    height:100%;
+    backface-visibility:hidden;
+    background:var(--card); 
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:var(--radius); 
+    padding:16px 18px 14px;
     box-shadow:0 18px 40px rgba(0,0,0,.25);
+    overflow:hidden;
   }
+
+  .card{
+    z-index:2;
+    transform:rotateY(0deg);
+    transition:border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .card-container:hover .card{
+    border-color:rgba(58,124,247,.4);
+    box-shadow:0 18px 40px rgba(58,124,247,.15);
+  }
+
+  .card-back{
+    transform:rotateY(180deg);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    border-color:rgba(58,124,247,.4);
+    background:linear-gradient(135deg, var(--card) 0%, rgba(58,124,247,.05) 100%);
+  }
+
   .when{font-size:12px; color:var(--muted); letter-spacing:.3px}
   .title{font-weight:800; margin:6px 0 6px}
   .tags{margin-top:8px; display:flex; gap:8px; flex-wrap:wrap}
   .tag{font-size:11px; padding:2px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.12); color:var(--muted)}
 
+  /* Hover indicator */
+  .hover-hint{
+    position:absolute;
+    bottom:8px;
+    right:12px;
+    font-size:10px;
+    color:var(--muted);
+    opacity:0.6;
+    display:flex;
+    align-items:center;
+    gap:4px;
+    pointer-events:none;
+  }
+
+  .hover-icon{
+    width:16px;
+    height:16px;
+    border:1px solid currentColor;
+    border-radius:4px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:9px;
+  }
+
+  .anecdote-title{
+    font-size:13px;
+    font-weight:700;
+    color:var(--stroke);
+    margin:0 0 8px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+  }
+
+  .anecdote-text{
+    font-size:14px;
+    line-height:1.5;
+    color:var(--fg);
+    margin:0;
+  }
+
   @media (max-width:860px){
-    .cards{gap:40px 24px} /* still roomy on mobile */
-    .card{flex:1 1 100%; max-width:none}
+    .cards{gap:40px 24px}
+    .card-container{flex:1 1 100%; max-width:none}
     .canvas{padding:42px 16px 72px; min-height:700px}
+  }
+
+  /* Touch device support */
+  @media (hover: none){
+    .hover-hint{opacity:0.8}
   }
 </style>
 </head>
 <body>
   <!-- header -->
-  <site-header page="journey"></site-header>
-  <div style="height:56px"></div>
+  <site-header page="engineer journey"></site-header>
   <div class="spacer"></div>
+  <div class="spacer"></div>
+
+  <div style="height:56px"></div>
   <div class="wrap">
-    <h1>Journey</h1>
+    <h1>Engineer Journey</h1>
     <p class="lead">A literal path through study → internships → research → present. How am I jobless? LOL</p>
   </div>
 
@@ -88,7 +188,6 @@
     <div class="canvas" id="canvas">
       <svg id="svg" aria-hidden="true">
         <defs>
-          <!-- Arrowheads that inherit stroke & auto-rotate -->
           <marker id="arrow-main" viewBox="0 0 12 12"
                   markerWidth="12" markerHeight="12"
                   refX="10" refY="6"
@@ -109,90 +208,206 @@
       </svg>
 
       <div class="cards" id="cards">
-        <!-- Keep this order chronological; flow is computed by rows -->
-        <article class="card">
-          <div class="when">2018–2024</div>
-          <h3 class="title">BSc in Software Engineering</h3>
-          <p>Foundations: algorithms, data, systems, and building for real users. Learned to think in tests and ship in small steps.</p>
-          <div class="tags"><span class="tag">#study</span><span class="tag">#software</span></div>
-        </article>
+        <!-- Card 1 -->
+        <div class="card-container">
+          <div class="card-inner">
+            <article class="card">
+              <div class="when">2018–2024</div>
+              <h3 class="title">BSc in Software Engineering</h3>
+              <p>Built a strong technical foundation and well-rounded problem-solving skills. Learned to think in tests and iterate in small, effective steps.</p>
+              <div class="tags"><span class="tag">#study</span><span class="tag">#software</span></div>
+              <div class="hover-hint">
+                <span class="hover-icon">↻</span>
+                <span>hover/tap</span>
+              </div>
+            </article>
+            <div class="card-back">
+              <p class="anecdote-title">💭 Behind the Experience</p>
+              <p class="anecdote-text">College was six years of learning to code, collaborate, and navigate being one of the few women in a male-dominated field. There were long nights, mistakes, and moments of panic—but also laughter, coffee-fueled breakthroughs, and the satisfaction of getting my degree.</p>
+            </div>
+          </div>
+        </div>
 
-        <article class="card">
-          <div class="when">2021 (summer)</div>
-          <h3 class="title">REU Undergraduate Research</h3>
-          <p>Studied how people perceive AI- vs human-written text. Ran user studies, analysis, and wrote it up for a now published paper.</p>
-          <div class="tags"><span class="tag">#research</span><span class="tag">#nlp</span></div>
-        </article>
+        <!-- Card 2 -->
+        <div class="card-container">
+          <div class="card-inner">
+            <article class="card">
+              <div class="when">2021 (summer)</div>
+              <h3 class="title">REU Undergraduate Research</h3>
+              <p>Studied how people perceive AI- vs human-written text. Ran user studies, analysis, and wrote it up for a now published paper.</p>
+              <div class="tags"><span class="tag">#research</span><span class="tag">#nlp</span></div>
 
-        <article class="card">
-          <div class="when">2021–2022</div>
-          <h3 class="title">Customer-facing work</h3>
-          <p>Retail experience taught me operations, empathy under pressure, and patience (underrated engineering skills).</p>
-          <div class="tags"><span class="tag">#ops</span><span class="tag">#people</span></div>
-        </article>
+              <div class="hover-hint">
+                <span class="hover-icon">↻</span>
+                <span>hover/tap</span>
+              </div>
+            </article>
+            <div class="card-back">
+              <p class="anecdote-title">💭 Behind the Experience</p>
+              <p class="anecdote-text">My first taste of research was grueling: 15-hour days, barely any time to myself, and constant impostor syndrome. Even so, I’m grateful I got to work with GPT-3 so early, see the real-world AI challenges that are still unfolding today, and realize I could handle more than I thought.</p>
+              <a href="https://doi.org/10.1145/3428158" target="_blank" class="reu-paper">Paper</a>
+            </div>
+          </div>
+        </div>
 
-        <article class="card">
-          <div class="when">2022</div>
-          <h3 class="title">Cybersecurity R&amp;D Intern</h3>
-          <p>API testing, acceptance criteria, integrating manual + automated checks. Learned to treat quality as a system.</p>
-          <div class="tags"><span class="tag">#security</span><span class="tag">#testing</span></div>
-        </article>
+        <!-- Card 3 -->
+        <div class="card-container">
+          <div class="card-inner">
+            <article class="card">
+              <div class="when">2021–2022</div>
+              <h3 class="title">Retail Work</h3>
+              <p>Worked at a shop handling sales, product dispatch, and inventory. It was a fast-paced, team-driven role that required a lot of communication.</p>
+              <div class="tags"><span class="tag">#ops</span><span class="tag">#people</span></div>
+              <div class="hover-hint">
+                <span class="hover-icon">↻</span>
+                <span>hover/tap</span>
+              </div>
+            </article>
+            <div class="card-back">
+              <p class="anecdote-title">💭 Behind the Experience</p>
+              <p class="anecdote-text">With few classes that semester, I needed something to do and a way to earn some money. The repetitive work and interactions with all kinds of people ended up being really fun and helped me grow in communication and empathy, skills overlooked in software engineering.</p>
+            </div>
+          </div>
+        </div>
 
-        <article class="card">
-          <div class="when">2023</div>
-          <h3 class="title">Google TechExchange Student</h3>
-          <p>...</p>
-          <div class="tags"><span class="tag">#advanced_ds</span><span class="tag">#collab</span><span class="tag">#_</span></div>
-        </article>
+        <!-- Card 4 -->
+        <div class="card-container">
+          <div class="card-inner">
+            <article class="card">
+              <div class="when">2022</div>
+              <h3 class="title">Cybersecurity R&D Intern</h3>
+              <p>Tested APIs and integrated manual and automated checks. Learned to treat quality as a system and got hands-on exposure to compliance.</p>
+              <div class="tags"><span class="tag">#security</span><span class="tag">#testing</span></div>
+              <div class="hover-hint">
+                <span class="hover-icon">↻</span>
+                <span>hover/tap</span>
+              </div>
+            </article>
+            <div class="card-back">
+              <p class="anecdote-title">💭 Behind the Experience</p>
+              <p class="anecdote-text">First “real” tech internship. It wasn’t glamorous, and I expected more in-depth cybersecurity work, but it showed me how even small details can teach you a lot about a field. This later drew me toward roles focused on testing and quality assurance.</p>
+            </div>
+          </div>
+        </div>
 
-        <article class="card">
-          <div class="when">2023</div>
-          <h3 class="title">Apple QA / Tools Automation Intern</h3>
-          <p>Designed test plans for a major mobile app; automated critical paths in Swift/Obj-C; built internal tooling.</p>
-          <div class="tags"><span class="tag">#qa</span><span class="tag">#automation</span><span class="tag">#ios</span></div>
-        </article>
+        <!-- Card 5 -->
+        <div class="card-container">
+          <div class="card-inner">
+            <article class="card">
+              <div class="when">2023</div>
+              <h3 class="title">Google TechExchange Scholar</h3>
+              <p>Took Advanced Data Structures, Software Development Studio, and Technical Interviewing with mentorship from Google engineers.</p>
+              <div class="tags"><span class="tag">#advanced_ds</span><span class="tag">#collab</span></div>
+              <div class="hover-hint">
+                <span class="hover-icon">↻</span>
+                <span>hover/tap</span>
+              </div>
+            </article>
+            <div class="card-back">
+              <p class="anecdote-title">💭 Behind the Experience</p>
+              <p class="anecdote-text">This one was intense. It wasn’t a job, but a mix of classes, interviews, and professional development. The mentors were brilliant, pushing us to be our best selves, helping us overcome impostor syndrome, and teaching us to grow our skills.</p>
+            </div>
+          </div>
+        </div>
 
-        <article class="card">
-          <div class="when">early 2024</div>
-          <h3 class="title">Microsoft AI Product Capstone</h3>
-          <p>Prototyped an AI agent for planning and hygiene checks. Prompt design, decision support, and LLM eval in practice.</p>
-          <div class="tags"><span class="tag">#llm</span><span class="tag">#prompt_engineering</span><span class="tag">#product</span></div>
-        </article>
+        <!-- Card 6 -->
+        <div class="card-container">
+          <div class="card-inner">
+            <article class="card">
+              <div class="when">2023</div>
+              <h3 class="title">Apple QA / Tools Automation Intern</h3>
+              <p>Designed test plans for a major mobile app; automated critical paths in Swift/Obj-C; built internal tooling.</p>
+              <div class="tags"><span class="tag">#qa</span><span class="tag">#automation</span><span class="tag">#ios</span></div>
+              <div class="hover-hint">
+                <span class="hover-icon">↻</span>
+                <span>hover/tap</span>
+              </div>
+            </article>
+            <div class="card-back">
+              <p class="anecdote-title">💭 Behind the Experience</p>
+              <p class="anecdote-text">Just landing this role was a dream and everything I hoped for. I worked on Journal, an unshipped app, and as I took on more responsibilities, I grew confident in my abilities. I fell in love with nitpicking software and making everything perfect, and to this day it remains one of my best career experiences.</p>
+            </div>
+          </div>
+        </div>
 
-        <article class="card">
-          <div class="when">2025—now</div>
-          <h3 class="title">MSc in Artificial Intelligence</h3>
-          <p>Focusing on streaming speech recognition for Spanish-English code-switching: latency, accuracy, and real-world fit.</p>
-          <div class="tags"><span class="tag">#msc</span><span class="tag">#asr</span><span class="tag">#genai</span></div>
-        </article>
+        <!-- Card 7 -->
+        <div class="card-container">
+          <div class="card-inner">
+            <article class="card">
+              <div class="when">early 2024</div>
+              <h3 class="title">Microsoft AI Product Capstone</h3>
+              <p>Prototyped an AI Planning Copilot using SKAI and LLMs, automated hygiene checks in Azure DevOps, and designed prompts.</p>
+              <div class="tags"><span class="tag">#llm</span><span class="tag">#prompt_engineering</span><span class="tag">#product</span></div>
+              <div class="hover-hint">
+                <span class="hover-icon">↻</span>
+                <span>hover/tap</span>
+              </div>
+            </article>
+            <div class="card-back">
+              <p class="anecdote-title">💭 Behind the Experience</p>
+              <p class="anecdote-text">LLMs are powerful but unpredictable. Corporate pace and NDAs left us with less time than usual, which was frustrating. Wrestling with prompts taught me a lot about the quirks of AI products and how careful testing and iteration are essential.</p>
+            </div>
+          </div>
+        </div>
 
-        <article class="card">
-          <div class="when">now</div>
-          <h3 class="title">Looking for a Job </h3>
-          <p>👀</p>
-          <div class="tags"><span class="tag">#ai</span><span class="tag">#software</span><span class="tag">#anything_really</span></div>
-        </article>
+        <!-- Card 8 -->
+        <div class="card-container">
+          <div class="card-inner">
+            <article class="card">
+              <div class="when">2025—now</div>
+              <h3 class="title">MSc in Artificial Intelligence</h3>
+              <p>Coursework: Computer Vision, ML, Deep Learning for NLP, Reasoning Models, Web Sciences, Neural Networks, and Autonomous Robots.</p>
+              <div class="tags"><span class="tag">#msc</span><span class="tag">#asr</span><span class="tag">#genai</span></div>
+              <div class="hover-hint">
+                <span class="hover-icon">↻</span>
+                <span>hover/tap</span>
+              </div>
+            </article>
+            <div class="card-back">
+              <p class="anecdote-title">💭 Behind the Experience</p>
+              <p class="anecdote-text">This master’s taught me what excites me in AI and what doesn’t. My TFM, a systematic review on streaming Spanish-English code-switching ASR, sharpened my research skills, and the people I met along the way challenged and inspired me, making me a better student and person.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 9 -->
+        <div class="card-container">
+          <div class="card-inner">
+            <article class="card">
+              <div class="when">now</div>
+              <h3 class="title">Looking for a Job</h3>
+              <p>👀</p>
+              <div class="tags"><span class="tag">#ai</span><span class="tag">#software</span><span class="tag">#anything_really</span></div>
+              <div class="hover-hint">
+                <span class="hover-icon">↻</span>
+                <span>hover/tap</span>
+              </div>
+            </article>
+            <div class="card-back">
+              <p class="anecdote-title">💭 Behind the Experience</p>
+              <p class="anecdote-text">The job market is tough, but my diverse experiences have taught me how to code, test, research, and work with people. I’m curious, persistent, and ready to tackle problems that matter. If that resonates, I’d love to connect.</p>
+              <a href="https://www.linkedin.com/in/andrea-orama/" target="_blank" class="linkedin-profile">Linked in</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
 <script>
-/* SmartArt-style connectors:
-   - Each row flows left->right (side arrows).
-   - At row break: exit from BOTTOM of last card, go DOWN, run ACROSS under to the
-     LEFTMOST of next row, then go UP into its TOP (always). */
+
 function drawSnake(){
   const canvas = document.getElementById('canvas');
   const svg    = document.getElementById('svg');
   const backG  = document.getElementById('conns-back');
   const mainG  = document.getElementById('conns-main');
-  const cards  = Array.from(document.querySelectorAll('.card'));
+  const cardContainers = Array.from(document.querySelectorAll('.card-container'));
 
   const crect = canvas.getBoundingClientRect();
   svg.setAttribute('viewBox', `0 0 ${crect.width} ${crect.height}`);
 
-  const GAP = 20; // clearance so arrowheads don't hide under card borders
-  const boxes = cards.map(el=>{
+  const GAP = 20;
+  const boxes = cardContainers.map(el=>{
     const r = el.getBoundingClientRect();
     const x = r.left - crect.left,  y = r.top - crect.top;
     const w = r.width,              h = r.height;
@@ -207,7 +422,6 @@ function drawSnake(){
   });
   if (!boxes.length){ backG.innerHTML=''; mainG.innerHTML=''; return; }
 
-  // Group into rows by y-center proximity
   const avgH   = boxes.reduce((a,b)=>a+b.h,0) / boxes.length;
   const ROW_EPS = Math.max(34, avgH * 0.55);
   const rows = [];
@@ -218,9 +432,8 @@ function drawSnake(){
     row.items.push({ i, x: b.cx });
   });
   rows.sort((a,b)=>a.y-b.y);
-  rows.forEach(r => r.items.sort((a,b)=>a.x-b.x)); // force left->right
+  rows.forEach(r => r.items.sort((a,b)=>a.x-b.x));
 
-  // Helpers
   function addConn(points){
     const d = "M " + points.map((p,idx)=>`${idx?'L ':''}${p.x},${p.y}`).join(' ');
     const pBack = document.createElementNS('http://www.w3.org/2000/svg','path');
@@ -236,41 +449,40 @@ function drawSnake(){
     mainG.appendChild(pMain);
   }
 
-  // Across each row
   for (let r = 0; r < rows.length; r++){
     const items = rows[r].items.map(it=>boxes[it.i]);
-
-    // side-to-side within the row (left -> right)
     for (let j = 0; j < items.length - 1; j++){
       const a = items[j], b = items[j+1];
       addConn([ a.right, b.left ]);
     }
-
-    // connect row r -> r+1
     if (r < rows.length - 1){
       const next = rows[r+1].items.map(it=>boxes[it.i]);
       const lastInRow = items[items.length - 1];
       const firstNext = next[0];
-
-      // Exit from UNDER the last card in current row
       const from = lastInRow.bottom;
-
-      // Always enter TOP of the first card in next row (as requested)
       const to = firstNext.top;
+      // Desired flow: exit last card via bottom center, run left along the
+      // gutter just above the next row, then enter first next-row card via top.
+      // Compute gutter so the vertical entry shows at least two visible dash strokes
+      const baseGutter = Math.min(...next.map(bx => bx.y)) - GAP; // just above next row
+      const fromBottom = lastInRow.bottom; // bottom midpoint of last card in current row
+      const toTop      = firstNext.top;    // top anchor of first card in next row
 
-      // Route: down to midway, across, up
-      const midY = (from.y + to.y) / 2;
+      // Match .conn-main dash pattern (14 16) with a small cushion
+      const DASH_LEN = 14, GAP_LEN = 16, CUSHION = 8;
+      const minDrop = DASH_LEN * 2 + GAP_LEN + CUSHION; // ensure two dashes are visible
+      const gutterY = Math.min(baseGutter, toTop.y - minDrop);
+
       addConn([
-        {x: from.x, y: from.y},        // under last card
-        {x: from.x, y: midY},          // straight down
-        {x: to.x,   y: midY},          // horizontal run under row
-        {x: to.x,   y: to.y}           // up into top of first card next row
+        {x: fromBottom.x, y: fromBottom.y}, // exit through bottom
+        {x: fromBottom.x, y: gutterY},       // drop to gutter above next row
+        {x: toTop.x,      y: gutterY},       // travel left aligned with card tops
+        {x: toTop.x,      y: toTop.y}        // enter through top (downward arrowhead)
       ]);
     }
   }
 
-  // grow canvas if needed
-  const bottom = Math.max(...cards.map(el => el.getBoundingClientRect().bottom)) - crect.top;
+  const bottom = Math.max(...cardContainers.map(el => el.getBoundingClientRect().bottom)) - crect.top;
   const needed = bottom + 90;
   if (needed > crect.height){
     canvas.style.minHeight = `${needed}px`;
@@ -279,7 +491,16 @@ function drawSnake(){
   }
 }
 
-// redraw after layout settles (flex-wrap)
+// Touch support for mobile
+document.addEventListener('DOMContentLoaded', ()=>{
+  const containers = document.querySelectorAll('.card-container');
+  containers.forEach(container => {
+    container.addEventListener('click', ()=>{
+      container.classList.toggle('flipped');
+    });
+  });
+});
+
 const reflow = () => requestAnimationFrame(()=>requestAnimationFrame(drawSnake));
 addEventListener('DOMContentLoaded', reflow);
 addEventListener('resize', reflow);

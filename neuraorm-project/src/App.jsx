@@ -1630,7 +1630,8 @@ export default function App() {
               Last updated: {PROFILE.lastUpdated}
             </span>
 
-            <span style={{ fontSize: 10, color: "rgba(255,255,255,0.13)" }}>Spain · {new Date().getFullYear()}</span>
+            <span style={{ fontSize: 10, color: "rgba(255,255,255,0.13)" }}>Spain
+            </span>
           </div>
         </div>
       </div>

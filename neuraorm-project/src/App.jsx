@@ -1521,8 +1521,8 @@ export default function App() {
           <Stats />
         </div>
 
-                {/* Experience */}
-                <section
+        {/* Experience */}
+        <section
           id="experience"
           style={{
             scrollMarginTop: 90,
@@ -1531,7 +1531,7 @@ export default function App() {
             width: "100%",
           }}
         >
-          <div style={{ textAlign: "center", marginBottom: 28 }}>
+          <div style={{ textAlign: "center" }}>
             <div
               style={{
                 fontSize: 10,

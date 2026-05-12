@@ -863,7 +863,6 @@ function Stats() {
 
   const items = [
     { label: "Years Experience", value: "2+", link: null },
-    { label: "Roles Held", value: "6", link: null },
     { label: "Papers Published", value: "1", link: "https://doi.org/10.1109/WNYISPW60588.2023.10349588" },
     { label: "FAANG Internships", value: "2", tooltip: "Microsoft · Apple", link: null },
     { label: "Native Languages", value: "2", tooltip: "English · Spanish", link: null },
@@ -875,7 +874,7 @@ function Stats() {
       className="stats-grid"
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(5, 1fr)",
+        gridTemplateColumns: "repeat(4, 1fr)",
         gap: 1,
         background: "rgba(255,255,255,0.04)",
       }}
@@ -1398,10 +1397,6 @@ export default function App() {
           .stat-cell {
             padding: 22px 10px !important;
             min-height: 105px !important;
-          }
-
-          .stats-grid .stat-cell:last-child {
-            grid-column: span 2 !important;
           }
 
           .experience-grid {

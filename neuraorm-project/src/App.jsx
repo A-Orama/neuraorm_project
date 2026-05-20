@@ -481,23 +481,6 @@ function Card({ exp, index }) {
                 {exp.role}
               </span>
 
-              {hl && (
-                <span
-                  style={{
-                    fontSize: 9,
-                    padding: "1px 5px",
-                    background: "rgba(129,199,132,0.1)",
-                    color: "#81c784",
-                    borderRadius: 3,
-                    border: "1px solid rgba(129,199,132,0.2)",
-                    fontWeight: 700,
-                    letterSpacing: "0.07em",
-                  }}
-                >
-                  KEY
-                </span>
-              )}
-
               <span
                 style={{
                   fontSize: 9,
